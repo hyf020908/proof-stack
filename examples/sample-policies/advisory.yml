@@ -1,0 +1,21 @@
+name: advisory
+version: 1
+rules:
+  - id: report-critical-findings
+    description: Surface critical findings while evaluating an early prototype
+    metric: findings.critical
+    operator: eq
+    value: 0
+    outcome: warn
+  - id: collect-requirement-evidence
+    description: Requirement coverage should be available
+    metric: requirements.coverage
+    operator: exists
+    value: true
+    outcome: warn
+  - id: flag-test-regression
+    description: Test evidence should not fall below 40 percent
+    metric: tests.evidence_score
+    operator: gte
+    value: 0.4
+    outcome: warn

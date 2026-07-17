@@ -1,0 +1,33 @@
+name: default
+version: 1
+rules:
+  - id: no-critical-findings
+    description: Critical findings are not allowed
+    metric: findings.critical
+    operator: eq
+    value: 0
+    outcome: fail
+  - id: limit-high-findings
+    description: No more than two high findings are allowed
+    metric: findings.high
+    operator: lte
+    value: 2
+    outcome: fail
+  - id: require-validation
+    description: At least one validation command must pass
+    metric: validation.passed
+    operator: gte
+    value: 1
+    outcome: fail
+  - id: requirement-coverage
+    description: Requirement evidence must reach 70 percent
+    metric: requirements.coverage
+    operator: gte
+    value: 0.7
+    outcome: warn
+  - id: test-evidence
+    description: Changed production code needs related test evidence
+    metric: tests.evidence_score
+    operator: gte
+    value: 0.6
+    outcome: warn

@@ -1,0 +1,41 @@
+diff --git a/src/legacy.py b/src/renamed.py
+similarity index 91%
+rename from src/legacy.py
+rename to src/renamed.py
+index 5b3d2bc..aebcc3e 100644
+--- a/src/legacy.py
++++ b/src/renamed.py
+@@ -1,5 +1,7 @@
+ def normalize(value: str) -> str:
+-    return value.strip().lower()
++    cleaned = value.strip().casefold()
++    if not cleaned:
++        raise ValueError("A value is required")
++    return cleaned
+ 
+ 
+ VERSION = 1
+diff --git a/src/new_module.py b/src/new_module.py
+new file mode 100644
+index 0000000..c81ea0d
+--- /dev/null
++++ b/src/new_module.py
+@@ -0,0 +1,6 @@
++"""A newly added module in the complex diff fixture."""
++
++
++def public_value() -> int:
++    """Return the fixture value."""
++    return 42
+diff --git a/src/obsolete.py b/src/obsolete.py
+deleted file mode 100644
+index 0d4d5a9..0000000
+--- a/src/obsolete.py
++++ /dev/null
+@@ -1,2 +0,0 @@
+-def obsolete() -> None:
+-    return None
+diff --git a/assets/icon.bin b/assets/icon.bin
+new file mode 100644
+index 0000000..f47ac10
+Binary files /dev/null and b/assets/icon.bin differ

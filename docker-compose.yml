@@ -1,0 +1,133 @@
+name: proofstack
+
+x-api-environment: &api-environment
+  PROOFSTACK_ENV: ${PROOFSTACK_ENV:-production}
+  PROOFSTACK_DEMO_MODE: ${PROOFSTACK_DEMO_MODE:-false}
+  PROOFSTACK_DATABASE_URL: postgresql+psycopg://proofstack:${PROOFSTACK_POSTGRES_PASSWORD:?Set PROOFSTACK_POSTGRES_PASSWORD}@postgres:5432/proofstack
+  PROOFSTACK_REDIS_URL: redis://redis:6379/0
+  PROOFSTACK_TASK_BACKEND: rq
+  PROOFSTACK_RUNNER: native
+  PROOFSTACK_SECRET_KEY: ${PROOFSTACK_SECRET_KEY:?Set PROOFSTACK_SECRET_KEY to a random value of at least 32 characters}
+  PROOFSTACK_ACCESS_TOKEN_TTL: ${PROOFSTACK_ACCESS_TOKEN_TTL:-900}
+  PROOFSTACK_REFRESH_TOKEN_TTL: ${PROOFSTACK_REFRESH_TOKEN_TTL:-604800}
+  PROOFSTACK_MAX_UPLOAD_MB: ${PROOFSTACK_MAX_UPLOAD_MB:-25}
+  PROOFSTACK_MAX_REPOSITORY_MB: ${PROOFSTACK_MAX_REPOSITORY_MB:-100}
+  PROOFSTACK_MAX_FILE_COUNT: ${PROOFSTACK_MAX_FILE_COUNT:-10000}
+  PROOFSTACK_COMMAND_TIMEOUT: ${PROOFSTACK_COMMAND_TIMEOUT:-120}
+  PROOFSTACK_GITHUB_TOKEN: ${PROOFSTACK_GITHUB_TOKEN:-}
+  PROOFSTACK_SEMGREP_ENABLED: ${PROOFSTACK_SEMGREP_ENABLED:-false}
+  PROOFSTACK_LLM_ENABLED: ${PROOFSTACK_LLM_ENABLED:-false}
+  PROOFSTACK_LLM_BASE_URL: ${PROOFSTACK_LLM_BASE_URL:-https://api.openai.com/v1}
+  PROOFSTACK_LLM_API_KEY: ${PROOFSTACK_LLM_API_KEY:-}
+  PROOFSTACK_LLM_MODEL: ${PROOFSTACK_LLM_MODEL:-}
+  PROOFSTACK_ALLOWED_ORIGINS: http://localhost:8080
+  PROOFSTACK_ARTIFACT_ROOT: /var/lib/proofstack/artifacts
+  PROOFSTACK_WORKSPACE_ROOT: /var/lib/proofstack/workspaces
+  PROOFSTACK_LOG_LEVEL: ${PROOFSTACK_LOG_LEVEL:-INFO}
+
+services:
+  postgres:
+    image: postgres:16.6-alpine3.20
+    environment:
+      POSTGRES_DB: proofstack
+      POSTGRES_USER: proofstack
+      POSTGRES_PASSWORD: ${PROOFSTACK_POSTGRES_PASSWORD:?Set PROOFSTACK_POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U proofstack -d proofstack"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  redis:
+    image: redis:7.4.2-alpine3.21
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/API.Dockerfile
+    environment: *api-environment
+    ports:
+      - "8000:8000"
+    volumes:
+      - artifacts:/var/lib/proofstack/artifacts
+      - workspaces:/var/lib/proofstack/workspaces
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Worker.Dockerfile
+    environment: *api-environment
+    volumes:
+      - artifacts:/var/lib/proofstack/artifacts
+      - workspaces:/var/lib/proofstack/workspaces
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Web.Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/v1
+    ports:
+      - "8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=32m
+      - /tmp:size=32m,mode=1777
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  artifacts:
+  postgres-data:
+  redis-data:
+  workspaces:

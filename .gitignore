@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+venv/
+env/
+dist/
+build/
+*.whl
+
+# JavaScript
+node_modules/
+apps/web/dist/
+coverage/
+.eslintcache
+.vite/
+.turbo/
+playwright-report/
+test-results/
+.playwright/
+
+# Runtime
+.env
+.proofstack/
+proofstack.db
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.pid
+tmp/
+temp/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

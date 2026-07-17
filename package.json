@@ -1,0 +1,21 @@
+{
+  "name": "proofstack-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-driven acceptance for AI-generated code changes",
+  "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --dir apps/web dev",
+    "build": "pnpm --dir apps/web build",
+    "lint": "pnpm --dir apps/web lint",
+    "typecheck": "pnpm --dir apps/web typecheck",
+    "test": "pnpm --dir apps/web test",
+    "format": "pnpm --dir apps/web format",
+    "format:check": "pnpm --dir apps/web format:check",
+    "e2e": "pnpm --dir apps/web e2e"
+  }
+}

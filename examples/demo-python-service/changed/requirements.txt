@@ -1,0 +1,4 @@
+fastapi==0.115.8
+requests>=2
+sqlalchemy==2.0.38
+uvicorn==0.34.0

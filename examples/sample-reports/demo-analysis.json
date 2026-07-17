@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "analysis": {
+    "id": "sample-analysis-redacted",
+    "source_type": "demo",
+    "status": "completed",
+    "verdict": "fail",
+    "risk_score": 90
+  },
+  "metrics": {
+    "changed_files": 11,
+    "requirements_coverage": 0.6667,
+    "test_evidence_score": 0.2604,
+    "findings": {
+      "critical": 2,
+      "high": 26,
+      "medium": 9,
+      "low": 0,
+      "info": 1
+    }
+  },
+  "redaction": {
+    "secrets_included": false,
+    "example_mask": "ghp_\u2026bAa"
+  },
+  "note": "Illustrative, sanitized sample; generate a current bundle with proofstack demo."
+}

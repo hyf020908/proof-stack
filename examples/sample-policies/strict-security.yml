@@ -1,0 +1,33 @@
+name: strict-security
+version: 1
+rules:
+  - id: no-critical-findings
+    description: Critical findings are never accepted
+    metric: findings.critical
+    operator: eq
+    value: 0
+    outcome: fail
+  - id: no-high-findings
+    description: High findings must be absent
+    metric: findings.high
+    operator: eq
+    value: 0
+    outcome: fail
+  - id: no-failed-validations
+    description: Validation commands must not fail or time out
+    metric: validation.failed
+    operator: eq
+    value: 0
+    outcome: fail
+  - id: strong-test-evidence
+    description: Test evidence must reach 85 percent
+    metric: tests.evidence_score
+    operator: gte
+    value: 0.85
+    outcome: fail
+  - id: full-requirement-evidence
+    description: Requirement coverage must reach 90 percent
+    metric: requirements.coverage
+    operator: gte
+    value: 0.9
+    outcome: fail
