@@ -8,6 +8,7 @@ test("viewer can inspect evidence but cannot mutate findings or projects", async
   await page.getByLabel("Email").fill("viewer@example.test");
   await page.getByLabel("Password").fill("Viewer-password-123");
   await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page.getByRole("heading", { name: "What is ready to merge?" })).toBeVisible();
   await page.goto("/analyses/analysis-1/findings");
   await expect(page.getByText("Shell execution accepts untrusted input")).toBeVisible();
   await page.getByRole("button", { name: /shell execution accepts untrusted input/i }).click();

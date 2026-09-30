@@ -338,6 +338,11 @@ make clean-check
 Security/组件测试、前端生产构建、CLI Demo、Evidence 校验、API Smoke，最后完成清理与 Clean Check。
 Playwright 提供 3 条不依赖外网的 E2E 用户流程，可通过 `make e2e` 运行。
 
+GitHub 仅保留一个 CI 工作流，在向 `main` 提交代码或创建 PR 时运行后端和前端的格式、Lint、类型、
+测试及前端构建。安全回归测试包含在后端测试中。CI 没有定时任务、在线依赖审计、Semgrep 服务请求、
+报告上传或自动部署。安装依赖仍会从 PyPI 和 npm 下载软件包。
+需要额外验证时，可在本地手动运行 `make smoke`、`make acceptance` 和 `make e2e`。
+
 更多信息见[本地开发](docs/development/local-development.md)、
 [测试指南](docs/development/testing.md)和 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -352,7 +357,7 @@ examples/             真实 Demo 快照、Diff、Policy、脱敏报告
 docs/                 架构、API、开发、安全和示例文档
 docker/               非 root API、Worker、Web 镜像与 Nginx
 scripts/              Acceptance、Smoke、仓库校验与清理
-.github/workflows/    Backend、Frontend、Security、E2E、Acceptance CI
+.github/workflows/    一个后端和前端 CI 工作流
 ```
 
 ## 当前限制

@@ -6,6 +6,7 @@ cd "${ROOT_DIR}"
 
 if [[ -x "${ROOT_DIR}/.venv/bin/python" ]]; then
     PYTHON_BIN="${ROOT_DIR}/.venv/bin/python"
+    export PATH="${ROOT_DIR}/.venv/bin:${PATH}"
 else
     PYTHON_BIN="${PYTHON_BIN:-python3}"
 fi

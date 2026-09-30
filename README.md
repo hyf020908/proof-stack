@@ -385,6 +385,12 @@ integration, contract, security and component tests, the frontend production bui
 verification, API smoke, final cleanup, and cleanliness verification. Playwright has three
 offline end-to-end user journeys and is available through `make e2e`.
 
+GitHub runs one CI workflow on pushes to `main` and pull requests: backend and frontend
+formatting, lint, types, tests, and the frontend build. Security regression tests are included
+in the backend suite. CI has no scheduled jobs, online dependency audits, Semgrep service
+calls, report uploads, or deployment steps. Dependency installation still downloads packages
+from PyPI and npm. Run `make smoke`, `make acceptance`, and `make e2e` locally when needed.
+
 See [testing](docs/development/testing.md) and [contributing](CONTRIBUTING.md).
 
 ## Repository layout
@@ -398,7 +404,7 @@ examples/             real Demo snapshots, diffs, policies, sanitized reports
 docs/                 architecture, API, development, security, examples
 docker/               non-root API, worker, and web images plus Nginx
 scripts/              acceptance, smoke, repository verification, cleanup
-.github/workflows/    backend, frontend, security, E2E, acceptance CI
+.github/workflows/    one backend and frontend CI workflow
 ```
 
 ## Current limitations

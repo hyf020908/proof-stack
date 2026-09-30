@@ -3,6 +3,13 @@
 ProofStack separates fast domain tests from transport, security, browser, and acceptance
 tests so failures point to the correct boundary.
 
+GitHub CI runs the Python and frontend checks in two jobs within one workflow. The Python
+job includes unit, integration, contract, and security tests with branch coverage; the
+frontend job includes component tests and the production build. Smoke, browser, and full
+acceptance checks are local commands. CI does not schedule background scans, query online
+audit or Semgrep services, upload reports, or deploy the application. Installing dependencies
+requires package downloads from PyPI and npm.
+
 | Suite | Command | Scope |
 | --- | --- | --- |
 | Python | `make test-python` | Unit, integration, contract, and security tests with coverage |
@@ -22,8 +29,8 @@ external network, execute repository-provided arbitrary shell, or leave archives
 reports, screenshots, or credentials behind.
 
 When a tool is genuinely unavailable, report it as unavailable. A skipped, unavailable, or
-timed-out validation is not a pass. CI artifacts such as coverage and Playwright reports are
-diagnostic only and are removed by `make clean` locally.
+timed-out validation is not a pass. Local coverage and Playwright reports are diagnostic
+only and are removed by `make clean`.
 
 To reproduce a failure, run the narrowest suite first, repair the root cause, rerun that
 suite, then rerun `make acceptance`. Finish with `make clean-check` and
